@@ -7,6 +7,7 @@ var placeSchema = new mongoose.Schema(
        image: String,
        description: String,
        location: String,
+       hasFormedGroups:{ type: Boolean, default: false },
        author:
        {
            id: 

@@ -39,9 +39,9 @@
                  <% if(!currentUser) {%>
                     <a class="navbar-brand" href="/">Unovoyage</a> <!--For not logged in send to Home Page -->
                 <% } else {%>
-                     <% if(currentUser.username==="admin") {%>
+                     <% if(currentUser.isAdmin) {%>
                     <a class="navbar-brand" href="/places">Unovoyage</a>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <a class="navbar-brand" href="/places/manager">Unovoyage</a><!--If logged in send to Dashboard  -->
                     <% } else {%>
                     <a class="navbar-brand" href="/places/user">Unovoyage</a> <!--If logged in send to Dashboard  -->
@@ -52,12 +52,12 @@
             <div class="collapse navbar-collapse" id="bs-nav-demo">
                 <ul class="nav navbar-nav navbar-right">
                  <% if(!currentUser) {%>
-                    <li><a href="/adminLogin">Log In   <i class="fa fa-user-plus"></i></a></li>
-                    <li><a href="/register">Sign Up   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/adminLogin">Log In   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/register">Sign Up   <i class="fa fa-user-plus"></i></a></li>
                 <% } else {%>
-                    <% if(currentUser.username==="admin") {%>
+                    <% if(currentUser.isAdmin) {%>
                     <li><a href="/places"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <li><a href="/places/manager"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>                    
                     <% } else {%>
                     <li><a href="/edit"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
@@ -82,16 +82,19 @@
 
 <h2 align="center">Your Interested Places</h2>
 <div class="container">
-
-    <% val.interested.forEach(function(place) {%>
   <div class="row">
-            <div class="col-md-6">
-                <div class="well well-lg" style="color: black; background: rgba(255, 255, 255, .3); text-align: center;">
-              <strong><%= place.name %></strong>
-                <p><%= place.description %></p>            
-            </div>
+    <% val.interested.forEach(function(place) {%>
+        <div class="col-md-4 col-sm-6">
+            <div class="well well-lg" style="color: black; background: rgba(255, 255, 255, .3); text-align: center;">
+                <center>
+                    <img class="img-responsive img-rounded" src="<%= place.image %>" style="height: 200px; width: 370px;">
+                    <div class="caption text-center">
+                        <h4><%= place.name %></h4> 
+                        <a class="btn btn-primary" href="/places/user/<%= place._id %>"><span id="more_info"> More Info </span></a>
+                    </div>
+                </center>
+            </div>          
         </div>
     <% }); %>
-</div>
-
+</div>  
 <% include ../partials/footer %>

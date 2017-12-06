@@ -13,7 +13,7 @@
     <body>
     <style type="text/css">
         
-    .navbar-default { margin : 0 !important; }
+    .navbar { margin : 0 !important; }
     .footer {
        position: fixed;
        left: 0;
@@ -26,7 +26,6 @@
     </style>
 
     <nav class="navbar navbar-inverse">
-        <div class="container">
             <div class="navbar-header">
                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
@@ -37,9 +36,9 @@
                  <% if(!currentUser) {%>
                     <a class="navbar-brand" href="/">Unovoyage</a> <!--For not logged in send to Home Page -->
                 <% } else {%>
-                     <% if(currentUser.username==="admin") {%>
+                     <% if(currentUser.isAdmin) {%>
                     <a class="navbar-brand" href="/places">Unovoyage</a>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <a class="navbar-brand" href="/places/manager">Unovoyage</a><!--If logged in send to Dashboard  -->
                     <% } else {%>
                     <a class="navbar-brand" href="/places/user">Unovoyage</a> <!--If logged in send to Dashboard  -->
@@ -48,24 +47,34 @@
 
             </div>
             <div class="collapse navbar-collapse" id="bs-nav-demo">
-                <ul class="nav navbar-nav navbar-right">
-                 <% if(!currentUser) {%>
-                    <li><a href="/adminLogin">Log In   <i class="fa fa-user-plus"></i></a></li>
-                    <li><a href="/register">Sign Up   <i class="fa fa-user"></i></a></li>
-                <% } else {%>
-                    <% if(currentUser.username==="admin") {%>
-                    <li><a href="/places"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
-                    <% }else if(currentUser.username==="manager") { %>
-                    <li><a href="/places/manager"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>                    
-                    <% } else {%>
-                    <li><a href="/edit"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
-                <% } %>
-                    <li><a href="/logout"> Log out  <i class="fa fa-sign-out" aria-hidden="true"></i>
-                </a></li>
-                <% } %>
-                </ul>
+      <div class="col-sm-6 col-md-8" style="margin-left: 10%">
+        <form class="navbar-form" role="search"  method="post" action="/places/searchmanager">
+          <div class="input-group" style="width:100%;">
+              <input type="text" class="form-control" placeholder="Search" name="search">
+              <div class="input-group-btn">
+                  <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              </div>
+          </div>
+        </form>
+      </div>
+
+      <ul class="nav navbar-nav navbar-right">
+       <% if(!currentUser) {%>
+          <li><a href="/adminLogin">Log In   <i class="fa fa-user-plus"></i></a></li>
+          <li><a href="/register">Sign Up   <i class="fa fa-user"></i></a></li>
+      <% } else {%>
+          <% if(currentUser.isAdmin) {%>
+          <li><a href="/places"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
+          <% }else if(currentUser.isManager) { %>
+          <li><a href="/places/manager"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>                    
+          <% } else {%>
+          <li><a href="/edit"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
+      <% } %>
+          <li><a href="/logout"> Log out  <i class="fa fa-sign-out" aria-hidden="true"></i>
+      </a></li>
+      <% } %>
+      </ul>
             </div>
-        </div>
     </nav>
 <div class="container">
     <% if(error && error.length>0 ) {%>
@@ -123,7 +132,6 @@
       </a>
     </div>
 </div>
-
 <div class="container px-2" style="margin-top: 50px;">
     <div class="row text-center" style="display: flex; flex-wrap: wrap;">
         <% for (var i=0;i<data.length;i++) { %>

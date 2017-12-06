@@ -7,22 +7,114 @@
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/stylesheets/animate.css">
-        <link rel="stylesheet" href="/stylesheets/style2.css">
+        <link rel="stylesheet" href="/stylesheets/style2.css">        
     </head>
 
+
     <body>
+<script>
+
+var map;
+var geocoder;
+var initialize=0;
+
+     
+      function initMap() {
+     
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: {lat: 20.593, lng: 78.962}
+        });
+        geocoder = new google.maps.Geocoder();
+       // console.log(data+" asdffffffffffffff");
+        // var j=JSON.parse(data);
+        // console.log("ffff" + j);
+        var d = document.getElementsByClassName("caption");
+        for(var i=0;i<placeCount;i++)
+        {
+            var placesName=arr[i];
+            console.log(arr[i] + "here here");
+        
+            var address = arr[i];
+            var t=address;
+           
+             geocoder.geocode({'address': address}, function(results, status) {
+            if (status === 'OK') {
+            map.setCenter(results[0].geometry.location);
+     
+
+
+            var marker = new google.maps.Marker({
+            position: results[0].geometry.location,
+            title:t
+            });
+          
+            marker.setMap(map);
+
+              } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+              }
+            });
+        }
+        
+/*
+        var placesName="Goa";
+        
+         var address = placesName;
+       
+          geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+        map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              position: results[0].geometry.location,
+              optimized: false
+            });
+            marker.setTitle("Hello WOrld");
+            marker.setMap(map);
+            initialize=1;
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });*/
+
+
+
+     
+      }
+
+
+   
+    </script>
+
+
+<script >
+
+var place;
+var arr=[1000];
+var placeCount=0;
+
+function addPlaceName(name)
+{   
+    place=name;
+    arr[placeCount]=place;
+    console.log("here" + arr[placeCount] + placeCount);
+    
+    placeCount++;
+}
+
+</script>
     <style type="text/css">
-		
-	.navbar-default { margin : 0 !important; }
+	
+	.navbar{ margin : 0 !important; }
 	.footer {
 	   position: fixed;
 	   left: 0;
 	   bottom: 0;
 	   width: 100%;
-	   background-color: red;
 	   color: white;
 	   text-align: center;
-	}
+	   z-index: 100;
+    }
     </style>
 
     <nav class="navbar navbar-inverse">
@@ -37,25 +129,35 @@
                  <% if(!currentUser) {%>
                     <a class="navbar-brand" href="/">Unovoyage</a> <!--For not logged in send to Home Page -->
                 <% } else {%>
-                     <% if(currentUser.username==="admin") {%>
+                     <% if(currentUser.isAdmin) {%>
                     <a class="navbar-brand" href="/places">Unovoyage</a>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <a class="navbar-brand" href="/places/manager">Unovoyage</a><!--If logged in send to Dashboard  -->
                     <% } else {%>
                     <a class="navbar-brand" href="/places/user">Unovoyage</a> <!--If logged in send to Dashboard  -->
                     <% } %>
                <% } %>
-
             </div>
+
+                <div class="col-sm-6 col-md-8" style="margin-left: 10%">
+                    <form class="navbar-form" role="search"  method="post" action="/places/search">
+                        <div class="input-group" style="width:100%;">
+                            <input type="text" class="form-control" placeholder="Search" name="search">
+                            <div class="input-group-btn">
+                                  <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             <div class="collapse navbar-collapse" id="bs-nav-demo">
                 <ul class="nav navbar-nav navbar-right">
                  <% if(!currentUser) {%>
-                    <li><a href="/adminLogin">Log In   <i class="fa fa-user-plus"></i></a></li>
-                    <li><a href="/register">Sign Up   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/adminLogin">Log In   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/register">Sign Up   <i class="fa fa-user-plus"></i></a></li>
                 <% } else {%>
-                    <% if(currentUser.username==="admin") {%>
+                    <% if(currentUser.isAdmin) {%>
                     <li><a href="/places"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <li><a href="/places/manager"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>                    
                     <% } else {%>
                     <li><a href="/edit"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
@@ -64,9 +166,11 @@
                 </a></li>
                 <% } %>
                 </ul>
+
             </div>
         </div>
     </nav>
+    <!-- this container can be used to display unsuccessful logins-->
 <div class="container">
     <% if(error && error.length>0 ) {%>
         <div class="alert alert-danger" role="alert"> <%= error %> </div>
@@ -76,14 +180,18 @@
             <% } %>
         </div>
 
-<!-- <div class="container">
- -->	<div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+
+
+	<div id="myCarousel" class="carousel slide" data-ride="carousel">
 	  <!-- Indicators -->
 	  <ol class="carousel-indicators">
 	    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
 	    <li data-target="#myCarousel" data-slide-to="1"></li>
 	    <li data-target="#myCarousel" data-slide-to="2"></li>
 	  </ol>
+
+      
 
 	  <!-- Wrapper for slides -->
 	  <div class="carousel-inner">
@@ -127,10 +235,12 @@
 <div class="container px-2" style="margin-top: 50px;">
     <div class="row text-center" style="display: flex; flex-wrap: wrap;">
 	    <% for (var i=0;i<data.length;i++) { %>
+
 	        <div class="col-md-4 col-sm-6">
 	            <img class="img-responsive img-rounded" src="<%= data[i].image %>" style="height: 60%; width: 100%;">
                  <div class="caption text-center">
-                     <h4><%= data[i].name %></h4> 
+                     <h4 class="pname"><%= data[i].name %></h4> 
+                     <script>addPlaceName("<%=data[i].name %>");</script>                          
                     <a class="btn btn-primary" href="/places/user/<%= data[i]._id %>"><span id="more_info"> More Info </span></a>
                 </div>
                 <p>
@@ -140,25 +250,38 @@
     </div>
 </div>
 
-<div class="container" style="padding-bottom: 20px; padding-top: 20px;margin-top: 25px;">
+<!-- <div class="container" style="padding-bottom: 20px; padding-top: 20px;margin-top: 25px;">
 	<div class="btn-group btn-group-justified"> 	
     </div>
 </div>
 
-<div class="container" style="padding-bottom: 10px;">
+<div class = "container" >
+<div id="map" style="height: 500px; width: 100%; margin-bottom: 30px;"></div>
+</div>
+
+ -->
+<div class="footer" style="padding-bottom: 10px;">
 	<div class="row">
-		<div class="col-sm-6 text-center">
+		<div class="col-xs-6 col-md-6 text-center">
 	 <form action="/places/showConfirmed" method="post">
         <button class="btn btn-info btn-lg btn-block">Confirmed Places</button>
     </form>
 		</div>
-		<div class="col-sm-6 center-block">
+		<div class="col-xs-6 col-md-6 center-block">
 	      	<form action="/places/showInterested" method="post">
                 <button class="btn btn-info btn-lg btn-block">Interested Places</button>
             </form>
 		</div>
 	</div>
 </div>
+
+<div id="map" style="height: 500px; width: 88%; margin-bottom: 130px;margin-left: 7%;border:2px black solid ;"></div>
+</div>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALL1EIInvvxZ6UaZ7A3Nn8Vcl3L3yq-fk&callback=initMap"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.simpleWeather/3.1.0/jquery.simpleWeather.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
 <% include ../partials/footer %>

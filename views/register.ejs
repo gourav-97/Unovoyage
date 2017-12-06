@@ -58,9 +58,9 @@
                  <% if(!currentUser) {%>
                     <a class="navbar-brand" href="/">Unovoyage</a> <!--For not logged in send to Home Page -->
                 <% } else {%>
-                     <% if(currentUser.username==="admin") {%>
+                     <% if(currentUser.isAdmin) {%>
                     <a class="navbar-brand" href="/places">Unovoyage</a>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <a class="navbar-brand" href="/places/manager">Unovoyage</a><!--If logged in send to Dashboard  -->
                     <% } else {%>
                     <a class="navbar-brand" href="/places/user">Unovoyage</a> <!--If logged in send to Dashboard  -->
@@ -68,15 +68,16 @@
                <% } %>
 
             </div>
+           
             <div class="collapse navbar-collapse" id="bs-nav-demo">
                 <ul class="nav navbar-nav navbar-right">
                  <% if(!currentUser) {%>
-                    <li><a href="/adminLogin">Log In   <i class="fa fa-user-plus"></i></a></li>
-                    <li><a href="/register">Sign Up   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/adminLogin">Log In   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/register">Sign Up   <i class="fa fa-user-plus"></i></a></li>
                 <% } else {%>
-                    <% if(currentUser.username==="admin") {%>
+                    <% if(currentUser.isAdmin) {%>
                     <li><a href="/places"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
-                    <% }else if(currentUser.username==="manager") { %>
+                    <% }else if(currentUser.isManager) { %>
                     <li><a href="/places/manager"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>                    
                     <% } else {%>
                     <li><a href="/edit"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>
@@ -101,32 +102,40 @@
 
 <div class="container">
     <div class="top">
+
       <form method="post" action="/register">
       <div class="login-box animated fadeInUp">
-    
+         <% if(registrationstatus==1){ %>
+       <p style="color: red; font-weight: bold; padding-bottom: 1px;">Please Enter a valid email</p>
+      <%}else if(registrationstatus==2){%>
+       <p style="color: red; font-weight: bold; padding-bottom: 1px;">Username already Exists</p>
+      
+      <%}else if(registrationstatus==3){%>
+       <p style="color: red; font-weight: bold; padding-bottom: 1px;">Please Enter a valid contact no.</p>
+      <%}%>
       <div class="box-header">
         <h2 class="text-muted">SIGN UP</h2>
       </div>
 
       <label for="username">Username</label>
       <br/>
-      <input type="text" id="username" name="username" >
+      <input type="text" id="username" name="username" required >
       <br/>
       <label for="password">Password</label>
       <br/>
-      <input type="password" id="password" name="password">
+      <input type="password" id="password" name="password" required>
       <br/>
       <label for="email">Email</label>
       <br/>
-      <input type="email" name="email" placeholder="email">
+      <input type="email" name="email" placeholder="email" required>
       <br/>
       <label for="contact">Contact No</label>
       <br/>
-      <input type="tel" name="contact" placeholder="contact">
+      <input type="tel" name="contact" placeholder="contact" required>
       <br/>
       <label for="name">Name</label>
       <br/>
-      <input type="text" name="name" placeholder="name">
+      <input type="text" name="name" placeholder="name" required>
 
       <br/>
       <button type="submit">Submit</button>

@@ -14,12 +14,30 @@ var userSchema = new mongoose.Schema(
         {
                  type: mongoose.Schema.Types.ObjectId,
                  ref: "Place"
-        }] ,
+                 
+        }],
         confirmed:[
+        {
+            id:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Place"
+            },
+                 date:
+                 {
+                    type: Date
+                 },
+                 groupFormed:{ type: Boolean, default: false },
+        }],
+
+           
+
+        confirmedPlaceId:[
         {
                  type: mongoose.Schema.Types.ObjectId,
                  ref: "Place"
-        }]   
+        }]  
+
+
       
     });
     

@@ -96,8 +96,8 @@ color: #000000;
             <div class="collapse navbar-collapse" id="bs-nav-demo">
                 <ul class="nav navbar-nav navbar-right">
                  <% if(!currentUser) {%>
-                    <li><a href="/adminLogin">Log In   <i class="fa fa-user-plus"></i></a></li>
-                    <li><a href="/register">Sign Up   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/adminLogin">Log In   <i class="fa fa-user"></i></a></li>
+                    <li><a href="/register">Sign Up   <i class="fa fa-user-plus"></i></a></li>
                 <% } else {%>
                     <% if(currentUser.isAdmin) {%>
                     <li><a href="/places"><%= currentUser.username %> <i class="fa fa-user"></i> </a></li>

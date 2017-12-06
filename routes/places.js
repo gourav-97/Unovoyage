@@ -64,6 +64,45 @@ router.post("/search",function(req,res)
 {
   var placename=req.body.search;
  // var query=Place.find({name:placename},{_id:1});
+
+    var interestedCount;
+    var confirmedCount;
+          Place.aggregate([
+          { $match : { name : placename } },
+          { $project : { count : { $size : "$confirmed" } } }
+          ]).exec(function(err, result) {
+            if(err)
+              throw err;
+           result.forEach(function(user){
+              console.log("========hereconfirmcount======" + user.count);
+              confirmedCount=user.count;
+
+           });
+        //   return res.json(result);
+           console.log("confirmcount" + confirmedCount);
+
+         });
+
+            Place.aggregate([
+              { $match : { name :  placename } },
+              { $project : { count : { $size : "$interested" } } }
+              ]).exec(function(err, result) {
+                if(err)
+                  throw err;
+                result.forEach(function(user){
+                  console.log("========hereinterestedcount======" + user.count);
+                  interestedCount=user.count;
+
+           });
+                console.log("interestedCount" + interestedCount);
+               
+            });
+
+
+
+
+
+   
    Place.findOne({name:placename}).populate("comments").exec(function(err,val)
     {
         if(err || !val)
@@ -78,7 +117,7 @@ router.post("/search",function(req,res)
           console.log("=========" + strng);
           console.log("=========id " + val.description);
           console.log("=========id " + strng._id);
-           res.render("userDashboard/searchPlace",{val: val});
+          res.render("userDashboard/addViewComment",{val: val,interestedCount:interestedCount,confirmCount:confirmedCount});
 
            
         }
@@ -94,6 +133,46 @@ router.post("/searchadmin",function(req,res)
 {
   var placename=req.body.search;
  // var query=Place.find({name:placename},{_id:1});
+
+
+   var interestedCount;
+    var confirmedCount;
+          Place.aggregate([
+          { $match : { name : placename } },
+          { $project : { count : { $size : "$confirmed" } } }
+          ]).exec(function(err, result) {
+            if(err)
+              throw err;
+           result.forEach(function(user){
+              console.log("========hereconfirmcount======" + user.count);
+              confirmedCount=user.count;
+
+           });
+        //   return res.json(result);
+           console.log("confirmcount" + confirmedCount);
+
+         });
+
+            Place.aggregate([
+              { $match : { name :  placename } },
+              { $project : { count : { $size : "$interested" } } }
+              ]).exec(function(err, result) {
+                if(err)
+                  throw err;
+                result.forEach(function(user){
+                  console.log("========hereinterestedcount======" + user.count);
+                  interestedCount=user.count;
+
+           });
+                console.log("interestedCount" + interestedCount);
+               
+            });
+
+
+
+
+
+   
    Place.findOne({name:placename}).populate("comments").exec(function(err,val)
     {
         if(err || !val)
@@ -108,7 +187,7 @@ router.post("/searchadmin",function(req,res)
           console.log("=========" + strng);
           console.log("=========id " + val.description);
           console.log("=========id " + strng._id);
-            res.render("places/show",{val: val});
+            res.render("places/show",{val: val,interestedCount:interestedCount,confirmCount:confirmedCount});
 
            
         }
@@ -123,6 +202,41 @@ router.post("/searchmanager",function(req,res)
 {
   var placename=req.body.search;
  // var query=Place.find({name:placename},{_id:1});
+
+
+    var interestedCount;
+    var confirmedCount;
+          Place.aggregate([
+          { $match : { name : placename } },
+          { $project : { count : { $size : "$confirmed" } } }
+          ]).exec(function(err, result) {
+            if(err)
+              throw err;
+           result.forEach(function(user){
+              console.log("========hereconfirmcount======" + user.count);
+              confirmedCount=user.count;
+
+           });
+        //   return res.json(result);
+           console.log("confirmcount" + confirmedCount);
+
+         });
+
+            Place.aggregate([
+              { $match : { name :  placename } },
+              { $project : { count : { $size : "$interested" } } }
+              ]).exec(function(err, result) {
+                if(err)
+                  throw err;
+                result.forEach(function(user){
+                  console.log("========hereinterestedcount======" + user.count);
+                  interestedCount=user.count;
+
+           });
+                console.log("interestedCount" + interestedCount);
+               
+            });
+
    Place.findOne({name:placename}).populate("comments").exec(function(err,val)
     {
         if(err || !val)
@@ -137,7 +251,7 @@ router.post("/searchmanager",function(req,res)
           console.log("=========" + strng);
           console.log("=========id " + val.description);
           console.log("=========id " + strng._id);
-            res.render("managerDashboard/manager_comment",{val: val});
+            res.render("managerDashboard/manager_comment",{val: val,interestedCount:interestedCount,confirmCount:confirmedCount});
 
            
         }
@@ -197,9 +311,46 @@ router.get("/new",middleware.isLoggedIn, function(req, res)
 //shows more info about that campground
 router.get("/:id",function(req, res) 
 {
+    
     //find the campground with id
     var id=req.params.id;
     //we use the populate function for this 
+    
+    var interestedCount;
+    var confirmedCount;
+          Place.aggregate([
+          { $match : { _id : new mongoose.Types.ObjectId(id) } },
+          { $project : { count : { $size : "$confirmed" } } }
+          ]).exec(function(err, result) {
+            if(err)
+              throw err;
+           result.forEach(function(user){
+              console.log("========hereconfirmcount======" + user.count);
+              confirmedCount=user.count;
+
+           });
+        //   return res.json(result);
+           console.log("confirmcount" + confirmedCount);
+
+         });
+
+            Place.aggregate([
+              { $match : { _id :  new mongoose.Types.ObjectId(id) } },
+              { $project : { count : { $size : "$interested" } } }
+              ]).exec(function(err, result) {
+                if(err)
+                  throw err;
+                result.forEach(function(user){
+                  console.log("========hereinterestedcount======" + user.count);
+                  interestedCount=user.count;
+
+           });
+                console.log("interestedCount" + interestedCount);
+               
+            });
+
+
+
     Place.findById(req.params.id).populate("comments").exec(function(err,val)
     {
         if(err || !val)
@@ -208,7 +359,7 @@ router.get("/:id",function(req, res)
         }
         else
         {
-            res.render("places/show",{val: val});
+            res.render("places/show",{val: val,interestedCount:interestedCount,confirmCount:confirmedCount});
         }
     });
     //show template
@@ -220,6 +371,44 @@ router.get("/user/:id",function(req, res)
     var id=req.params.id;
     console.log("more info clicked " + id);
     //we use the populate function for this 
+
+    var interestedCount;
+    var confirmedCount;
+          Place.aggregate([
+          { $match : { _id : new mongoose.Types.ObjectId(id) } },
+          { $project : { count : { $size : "$confirmed" } } }
+          ]).exec(function(err, result) {
+            if(err)
+              throw err;
+           result.forEach(function(user){
+              console.log("========hereconfirmcount======" + user.count);
+              confirmedCount=user.count;
+
+           });
+        //   return res.json(result);
+           console.log("confirmcount" + confirmedCount);
+
+         });
+
+            Place.aggregate([
+              { $match : { _id :  new mongoose.Types.ObjectId(id) } },
+              { $project : { count : { $size : "$interested" } } }
+              ]).exec(function(err, result) {
+                if(err)
+                  throw err;
+                result.forEach(function(user){
+                  console.log("========hereinterestedcount======" + user.count);
+                  interestedCount=user.count;
+
+           });
+                console.log("interestedCount" + interestedCount);
+               
+            });
+
+
+
+
+
     Place.findById(id).populate("comments").exec(function(err,val)
     {
         if(err || !val)
@@ -228,8 +417,10 @@ router.get("/user/:id",function(req, res)
         }
         else
         {
-          console.log("-------------------in user/:id " + JSON.stringify(val));
-            res.render("userDashboard/addViewComment",{val: val});
+          
+
+     //     console.log("-------------------in user/:id " + JSON.stringify(val));
+            res.render("userDashboard/addViewComment",{val: val,interestedCount:interestedCount,confirmCount:confirmedCount});
         }
     });
     //show template
@@ -240,17 +431,59 @@ router.get("/manager/:id",function(req, res)
     //find the campground with id
     var id=req.params.id;
     //we use the populate function for this 
-    Place.findById(req.params.id).populate("comments").exec(function(err,val)
+
+    var interestedCount;
+    var confirmedCount;
+          Place.aggregate([
+          { $match : { _id : new mongoose.Types.ObjectId(id) } },
+          { $project : { count : { $size : "$confirmed" } } }
+          ]).exec(function(err, result) {
+            if(err)
+              throw err;
+           result.forEach(function(user){
+              console.log("========hereconfirmcount======" + user.count);
+              confirmedCount=user.count;
+
+           });
+        //   return res.json(result);
+           console.log("confirmcount" + confirmedCount);
+
+         });
+
+            Place.aggregate([
+              { $match : { _id :  new mongoose.Types.ObjectId(id) } },
+              { $project : { count : { $size : "$interested" } } }
+              ]).exec(function(err, result) {
+                if(err)
+                  throw err;
+                result.forEach(function(user){
+                  console.log("========hereinterestedcount======" + user.count);
+                  interestedCount=user.count;
+
+           });
+                console.log("interestedCount" + interestedCount);
+               
+            });
+
+
+
+
+
+    Place.findById(id).populate("comments").exec(function(err,val)
     {
         if(err || !val)
         {
-            console.log(err);
+            console.log("--------------err" + err);
         }
         else
         {
-            res.render("managerDashboard/manager_comment",{val: val});
+          
+
+     //     console.log("-------------------in user/:id " + JSON.stringify(val));
+            res.render("managerDashboard/manager_comment",{val: val,interestedCount:interestedCount,confirmCount:confirmedCount});
         }
     });
+   
     //show template
 });
 
@@ -380,7 +613,11 @@ router.get("/getConfirmCount/:name",function(req, res)
     ]).exec(function(err, result) {
       if(err)
         throw err;
-      console.log("count" + result);
+     result.forEach(function(user){
+        console.log("========count======" + user.count);
+
+     });
+      console.log();
       return res.json(result);
 });
 });
@@ -554,16 +791,16 @@ router.post("/showConfirmedUsers/:id",function(req,res){
                                             return console.log("error" + err);
                                         } else {
                                           console.log("found" + data);
-                                        res.render("userDashboard/showConfirmedUsers",{val: data,placeid:placeid});
-                                        //  return res.json(data);
+                                       res.render("userDashboard/showConfirmedUsers",{val: data,placeid:placeid});
+                                       //   return res.json(data);
                                         }
                                     }); 
                         }
                         else
                         {
 
-                          res.render("userDashboard/showConfirmedUsers",{val: data ,placeid:placeid}); 
-                        //return res.json(data);
+                         res.render("userDashboard/showConfirmedUsers",{val: data ,placeid:placeid}); 
+//                        return res.json(data);
                         }
                     }
                 });
@@ -605,15 +842,15 @@ router.post("/showNewUsersManager/:id",function(req,res){
       console.log("in showNewUsersManager" +id);
      // res.render("userDashboard/showInterested");
 
-      User.find({confirmed:{$elemMatch:{id:id,groupFormed:false}}})
+      User.find({confirmed:{$elemMatch:{id:id,groupFormed:false}}}).populate("confirmedPlaceId")
                         .exec(function (err, data){
                               if(err){
                                   return console.log("error" + err);
                               } else {
                                 console.log("found" + data);
 
-                                res.render("managerDashboard/newUsers",{val:data});
-                                // return res.json(data);
+                              res.render("managerDashboard/newUsers",{val:data,placeid:id});
+                              //return res.json(data);
                               }
                           });
         
@@ -644,7 +881,7 @@ router.post("/formGroups/:id",function(req, res)
         else
         {
 
-              User.find({confirmed:{$elemMatch:{id:placeid , date : {$gte: new Date(date1),$lt: new Date(date2)},groupFormed:true}}})
+              User.find({confirmed:{$elemMatch:{id:placeid , date : {$gte: new Date(date1),$lt: new Date(date2)},groupFormed:true}}})  .populate("confirmedPlaceId")
               .exec(function (err, data){
                     if(err){
                         return console.log("error" + err);
@@ -664,7 +901,8 @@ router.post("/formGroups/:id",function(req, res)
                            }
                         });
 //                       return res.json(data);
-                        res.render("managerDashboard/groupsFormed",{val:data});
+//                        res.render("managerDashboard/groupsFormed",{val:data,placeid:placeid});
+                        res.redirect("/places/manager");
  
                     }
                 });
@@ -676,6 +914,8 @@ router.post("/formGroups/:id",function(req, res)
 
 });
 
+//({_id:req.user._id},{confirmed:{$elemMatch:{id:placeid,groupFormed:true}},_id:0,"confirmed.date":1})
+ //             .populate("confirmedPlaceId")
 
 
 router.post("/viewGroups/:id",function(req, res) 
@@ -688,15 +928,17 @@ router.post("/viewGroups/:id",function(req, res)
   console.log(date1);
   console.log(date2);
 
-   User.find({confirmed:{$elemMatch:{id:placeid , date : {$gte: new Date(date1),$lt: new Date(date2)},groupFormed:true}}})
+   User.find({confirmed:{$elemMatch:{id:placeid , date : {$gte: new Date(date1),$lt: new Date(date2)},groupFormed:true}}}
+    )
+   .populate("confirmedPlaceId")
               .exec(function (err, data){
                     if(err){
                         return console.log("error" + err);
                     } else {
                       console.log("found" + data);
+                     // return res.json(data);
+                    res.render("managerDashboard/viewFormedGroups",{val:data,placeid:placeid,month:month,year:year});
 
-                       
-                       return res.json(data);
                     }
                 });
 
