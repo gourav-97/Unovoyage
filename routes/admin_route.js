@@ -4,7 +4,8 @@ var passport = require("passport");
 var Admin = require("../models/admin");
 var User = require("../models/user");
 var LocalStrategy = require('passport-local').Strategy;
-
+var status=0;
+var updationstatus=0;
 router.use(function(req,res,next)
 {
     // whatever we put in res.locals is available in our templates 
@@ -17,19 +18,26 @@ router.use(function(req,res,next)
 //show login form
 router.get("/adminlogin",function(req, res) 
 {
-    res.render("adminlogin");    
+    res.render("adminlogin",{updationstatus:updationstatus,status:status});  
+    status=0; 
+    updationstatus=0;
 });
 //use middleware
 router.post("/adminlogin",passport.authenticate("local",
     {
         successRedirect: "/checkAdmin",
-        failureRedirect: "/adminlogin",
+        failureRedirect: "/loginFailed",
         failureFlash: "Invalid Credentials"
     }),function(req,res)
     {
         
     });
 
+router.get("/loginFailed",function(req, res) 
+{
+    status=1;
+    res.redirect("/adminlogin");    
+});
 
 router.get("/checkAdmin",function(req, res) {
 
@@ -67,8 +75,11 @@ router.get("/checkAdmin",function(req, res) {
 //logout route
 router.get("/logout",function(req, res) {
     req.logout();
-    req.flash("success","logged you out");
+    var msg= req.flash("success","logged you out");
     res.redirect("/adminlogin");
+   /* res.render("adminlogin",{updationstatus:updationstatus,status:status,});  
+     status=0; 
+    updationstatus=0;*/
 });
 
 function isLoggedIn(req,res,next)
